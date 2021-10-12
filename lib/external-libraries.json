@@ -1,7 +1,14 @@
 {
-  "gitReferences": {},
+  "gitReferences": {
+    "fbcrawler": {
+      "remote": "https://github.com/erba994/fbcrawl.git",
+      "checkout": "refs/heads/master",
+      "remotePath": ""
+    }
+  },
   "pythonPath": [
-    "python"
+    "python",
+    "fbcrawler"
   ],
   "rsrcPath": [
     "R"
