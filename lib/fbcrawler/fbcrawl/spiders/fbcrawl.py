@@ -10,9 +10,8 @@ from datetime import datetime
 class FacebookSpider(scrapy.Spider):
     '''
     Parse FB pages (needs credentials)
-    '''    
-    name = 'facebook'
-    #self.start_urls = ['https://mbasic.facebook.com'] in __init__ function
+    '''
+    name = 'fb'
     custom_settings = {
         'FEED_EXPORT_FIELDS': ['source','shared_from','date','text', \
                                'reactions' \
@@ -156,7 +155,7 @@ class FacebookSpider(scrapy.Spider):
         #navigate to provided page
         href = response.urljoin(self.page)
         self.logger.info('Scraping facebook page {}'.format(href))
-        return scrapy.Request(url=href,callback=self.parse_page,meta={'index':1})
+        return scrapy.Request(url=href,callback=self.parse_page,meta={'index':1,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
     def parse_page(self, response):
         '''

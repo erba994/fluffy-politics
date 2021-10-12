@@ -15,7 +15,8 @@ SPIDER_MODULES = ['fbcrawl.spiders']
 NEWSPIDER_MODULE = 'fbcrawl.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = 'Mozilla/5.0 (BB10; Kbd) AppleWebKit/537.35+ (KHTML, like Gecko) Version/10.3.3.2205 Mobile Safari/537.35+'
+#USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'
+USER_AGENT = 'NokiaC3-00/5.0 (07.20) Profile/MIDP-2.1 Configuration/CLDC-1.1 Mozilla/5.0 AppleWebKit/420+ (KHTML, like Gecko) Safari/420+'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
@@ -25,14 +26,15 @@ CONCURRENT_REQUESTS = 1 #16
 # Configure a delay for requests for the same website (default: 0)
 # See https://doc.scrapy.org/en/latest/topics/settings.html#download-delay
 # See also autothrottle settings and docs
-DOWNLOAD_DELAY = 1 #3
+DOWNLOAD_DELAY = 3
 
 # The download delay setting will honor only one of:
 #CONCURRENT_REQUESTS_PER_DOMAIN = 1
 #CONCURRENT_REQUESTS_PER_IP = 16
 
 # Disable cookies (enabled by default)
-#COOKIES_ENABLED = False
+COOKIES_ENABLED = True
+#COOKIES_DEBUG = True
 
 # Disable Telnet Console (enabled by default)
 #TELNETCONSOLE_ENABLED = False
@@ -48,12 +50,19 @@ DOWNLOAD_DELAY = 1 #3
 #SPIDER_MIDDLEWARES = {
 #    'fbcrawl.middlewares.FbcrawlSpiderMiddleware': 543,
 #}
-
+SPIDER_MIDDLEWARES = {
+    'scrapy_splash.SplashDeduplicateArgsMiddleware': 100,
+}
 # Enable or disable downloader middlewares
 # See https://doc.scrapy.org/en/latest/topics/downloader-middleware.html
 #DOWNLOADER_MIDDLEWARES = {
 #    'fbcrawl.middlewares.FbcrawlDownloaderMiddleware': 543,
 #}
+DOWNLOADER_MIDDLEWARES = {
+    'scrapy_splash.SplashCookiesMiddleware': 723,
+    'scrapy_splash.SplashMiddleware': 725,
+    'scrapy.downloadermiddlewares.httpcompression.HttpCompressionMiddleware': 810,
+}
 
 # Enable or disable extensions
 # See https://doc.scrapy.org/en/latest/topics/extensions.html
@@ -88,8 +97,12 @@ DOWNLOAD_DELAY = 1 #3
 #HTTPCACHE_IGNORE_HTTP_CODES = []
 #HTTPCACHE_STORAGE = 'scrapy.extensions.httpcache.FilesystemCacheStorage'
 #FEED_EXPORT_FIELDS = ["source", "date", "text", "reactions","likes","ahah","love","wow","sigh","grrr","comments","url"] # specifies the order of the column to export as CSV
+DUPEFILTER_CLASS = 'scrapy_splash.SplashAwareDupeFilter'
+HTTPCACHE_STORAGE = 'scrapy_splash.SplashAwareFSCacheStorage'
 URLLENGTH_LIMIT = 99999
 FEED_EXPORT_ENCODING = 'utf-8'
 DUPEFILTER_DEBUG = True
-LOG_LEVEL = 'INFO'
-#LOG_LEVEL = 'DEBUG'
+#LOG_LEVEL = 'INFO'
+LOG_LEVEL = 'DEBUG'
+SPLASH_URL = 'http://0.0.0.0:8050'
+

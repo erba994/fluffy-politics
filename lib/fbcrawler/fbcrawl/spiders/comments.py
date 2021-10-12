@@ -38,13 +38,16 @@ class CommentsSpider(FacebookSpider):
         super().__init__(*args,**kwargs)
 
     def parse_page(self, response):
-        '''
-        '''
+
+        #open page in browser for debug
         if self.type == 'post':
+            with open('tuttifrutti.xml','w+',encoding='utf-8') as peepee:
+                peepee.write(response.text)
             yield scrapy.Request(url=response.url,
                                  callback=self.parse_post,
                                  priority=10,
-                                 meta={'index':1})
+                                 meta={'index':1,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
+
         elif self.type == 'page':
             #select all posts
             for post in response.xpath("//div[contains(@data-ft,'top_level_post_id')]"):
@@ -71,7 +74,7 @@ class CommentsSpider(FacebookSpider):
                 yield scrapy.Request(temp_post,
                                      self.parse_post,
                                      priority = self.count,
-                                     meta={'index':1})
+                                     meta={'index':1,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
             #load following page, try to click on "more"
             #after few pages have been scraped, the "more" link might disappears
@@ -98,7 +101,7 @@ class CommentsSpider(FacebookSpider):
                         yield scrapy.Request(new_page,
                                              callback=self.parse_page,
                                              priority = -1000,
-                                             meta={'flag':self.k})
+                                             meta={'flag':self.k,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
                     else:
                         while not new_page: #sometimes the years are skipped this handles small year gaps
                             self.logger.info('Link not found for year {}, trying with previous year {}'.format(self.k,self.k-1))
@@ -113,7 +116,7 @@ class CommentsSpider(FacebookSpider):
                         yield scrapy.Request(new_page,
                                              callback=self.parse_page,
                                              priority = -1000,
-                                             meta={'flag':self.k})
+                                             meta={'flag':self.k,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
                 else:
                     self.logger.info('Crawling has finished with no errors!')
             else:
@@ -123,13 +126,13 @@ class CommentsSpider(FacebookSpider):
                     yield scrapy.Request(new_page,
                                          callback=self.parse_page,
                                          priority = -1000,
-                                         meta={'flag':response.meta['flag']})
+                                         meta={'flag':response.meta['flag'],'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
                 else:
                     self.logger.info('First page scraped, clicking on "more"! new_page = {}'.format(new_page))
                     yield scrapy.Request(new_page,
                                          callback=self.parse_page,
                                          priority = -1000,
-                                         meta={'flag':self.k})
+                                         meta={'flag':self.k,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
     def parse_post(self, response):
         '''
@@ -146,6 +149,7 @@ class CommentsSpider(FacebookSpider):
         group_flag = response.meta['group'] if 'group' in response.meta else None
 
         for reply in response.xpath(path):
+            print('DEBUG --- PATH FOUND') ###DEBUG1
             source = reply.xpath('.//h3/a/text()').extract()
             answer = reply.xpath('.//a[contains(@href,"repl")]/@href').extract()
             ans = response.urljoin(answer[::-1][0])
@@ -157,11 +161,12 @@ class CommentsSpider(FacebookSpider):
                                        'url':response.url,
                                        'index':response.meta['index'],
                                        'flag':'init',
-                                       'group':group_flag})
+                                       'group':group_flag,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
 
         #load regular comments
         if not response.xpath(path): #prevents from exec
+            print('DEBUG --- PATH 2 FOUND') ###DEBUG1
             path2 = './/div[string-length(@class) = 2 and count(@id)=1 and contains("0123456789", substring(@id,1,1)) and not(.//div[contains(@id,"comment_replies")])]'
             for i,reply in enumerate(response.xpath(path2)):
                 self.logger.info('{} regular comment'.format(i+1))
@@ -206,7 +211,7 @@ class CommentsSpider(FacebookSpider):
                     check +=1
                     reactions = "https://mbasic.facebook.com" + temp.get_collected_values('reactions')[0]
                     temp = 0
-                    yield scrapy.Request(reactions, callback=self.parse_reactions, meta={'item':item})
+                    yield scrapy.Request(reactions, callback=self.parse_reactions, meta={'item':item,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
                 if check == 0:
                     yield item
@@ -215,6 +220,7 @@ class CommentsSpider(FacebookSpider):
 
         #new comment page
         if not response.xpath(path):
+            print('DEBUG --- PATH 3 FOUND') ###DEBUG1
             #for groups
             next_xpath = './/div[contains(@id,"see_next")]'
             prev_xpath = './/div[contains(@id,"see_prev")]'
@@ -226,7 +232,7 @@ class CommentsSpider(FacebookSpider):
                     yield scrapy.Request(new_page,
                                          callback=self.parse_post,
                                          meta={'index':1,
-                                               'group':1})
+                                               'group':1,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
             else:
                 for next_page in response.xpath(next_xpath):
                     new_page = next_page.xpath('.//@href').extract()
@@ -235,7 +241,7 @@ class CommentsSpider(FacebookSpider):
                     yield scrapy.Request(new_page,
                                          callback=self.parse_post,
                                          meta={'index':1,
-                                               'group':group_flag})
+                                               'group':group_flag,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
     def parse_reply(self,response):
         '''
@@ -246,6 +252,7 @@ class CommentsSpider(FacebookSpider):
 
         if response.meta['flag'] == 'init':
             #parse root comment
+            print('DEBUG 4') ###DEBUG
             for root in response.xpath('//div[contains(@id,"root")]/div/div/div[count(@id)!=1 and contains("0123456789", substring(@id,1,1))]'):
                 new = ItemLoader(item=CommentsItem(),selector=root)
                 new.context['lang'] = self.lang
@@ -271,7 +278,7 @@ class CommentsSpider(FacebookSpider):
                 check = 0
                 if profile:
                     check += 1
-                    yield scrapy.Request(profile, callback=self.parse_profile, meta={'item':item})
+                    yield scrapy.Request(profile, callback=self.parse_profile, meta={'item':item,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
                 #reactions = new.get_value('reactions')
                 #print("reactions",reactions)
@@ -285,7 +292,7 @@ class CommentsSpider(FacebookSpider):
                     check += 1
                     reactions = "https://mbasic.facebook.com" + temp.get_collected_values('reactions')[0]
                     temp = 0
-                    yield scrapy.Request(reactions, callback=self.parse_reactions, meta={'item':item})
+                    yield scrapy.Request(reactions, callback=self.parse_reactions, meta={'item':item,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
                 if check == 0:
                     yield item
@@ -317,7 +324,7 @@ class CommentsSpider(FacebookSpider):
                 check = 0
                 if profile:
                     check += 1
-                    yield scrapy.Request(profile, callback=self.parse_profile, meta={'item':item})
+                    yield scrapy.Request(profile, callback=self.parse_profile, meta={'item':item,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
                 temp = ItemLoader(item=CommentsItem(),selector=reply)
                 temp.context['lang'] = self.lang
@@ -328,7 +335,7 @@ class CommentsSpider(FacebookSpider):
                     check += 1
                     reactions = "https://mbasic.facebook.com" + temp.get_collected_values('reactions')[0]
                     temp = 0
-                    yield scrapy.Request(reactions, callback=self.parse_reactions, meta={'item':item})
+                    yield scrapy.Request(reactions, callback=self.parse_reactions, meta={'item':item,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
                 if check == 0:
                     yield item
@@ -345,7 +352,7 @@ class CommentsSpider(FacebookSpider):
                                            'flag':'back',
                                            'url':response.meta['url'],
                                            'index':response.meta['index'],
-                                           'group':response.meta['group']})
+                                           'group':response.meta['group'],'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
             else:
                 next_reply = response.meta['url']
@@ -353,7 +360,7 @@ class CommentsSpider(FacebookSpider):
                 yield scrapy.Request(next_reply,
                                      callback=self.parse_post,
                                      meta={'index':response.meta['index']+1,
-                                           'group':response.meta['group']})
+                                           'group':response.meta['group'],'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
         elif response.meta['flag'] == 'back':
             """
@@ -395,7 +402,7 @@ class CommentsSpider(FacebookSpider):
                 if profile:
                     check += 1
                     print(1)
-                    yield scrapy.Request(profile, callback=self.parse_profile, meta={'item':item})
+                    yield scrapy.Request(profile, callback=self.parse_profile, meta={'item':item,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
                 #response --> reply/root
                 #print("before ", item)
@@ -409,7 +416,7 @@ class CommentsSpider(FacebookSpider):
                     reactions = "https://mbasic.facebook.com" + temp.get_collected_values('reactions')[0]
                     temp = 0
                     print(2)
-                    yield scrapy.Request(reactions, callback=self.parse_reactions, meta={'item':item})
+                    yield scrapy.Request(reactions, callback=self.parse_reactions, meta={'item':item,'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
                 if check == 0:
                     print(3)
@@ -431,7 +438,7 @@ class CommentsSpider(FacebookSpider):
                                            'flag':'back',
                                            'url':response.meta['url'],
                                            'index':response.meta['index'],
-                                           'group':response.meta['group']})
+                                           'group':response.meta['group'],'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
 
             else:
                 next_reply = response.meta['url']
@@ -439,7 +446,7 @@ class CommentsSpider(FacebookSpider):
                 yield scrapy.Request(next_reply,
                                      callback=self.parse_post,
                                      meta={'index':response.meta['index']+1,
-                                           'group':response.meta['group']})
+                                           'group':response.meta['group'],'splash': {'endpoint': 'render.html','args': {'wait': 0.5}}})
     """
     PARSE_PROFILE
     This function parses the profile information from the user associated 
@@ -527,3 +534,8 @@ class CommentsSpider(FacebookSpider):
         new.add_xpath('sigh',"//a[contains(@href,'reaction_type=7')]/span/text()")
         new.add_xpath('grrr',"//a[contains(@href,'reaction_type=8')]/span/text()")'''
         #yield new.load_item()
+
+    def debug_parse(self,response):
+        html = response.get().text
+        with open('tuttifrutti.xml','w+',encoding='utf-8') as peepee:
+            peepee.write(html)
