@@ -10,14 +10,9 @@ from datetime import datetime
 class FacebookSpider(scrapy.Spider):
     '''
     Parse FB pages (needs credentials)
-<<<<<<< HEAD
-    '''
-    name = 'fb'
-=======
     '''    
     name = 'facebook'
     #self.start_urls = ['https://mbasic.facebook.com'] in __init__ function
->>>>>>> pr/57
     custom_settings = {
         'FEED_EXPORT_FIELDS': ['source','shared_from','date','text', \
                                'reactions' \
@@ -70,13 +65,8 @@ class FacebookSpider(scrapy.Spider):
             self.logger.info('Language attribute not provided, fbcrawl will try to guess it from the fb interface')
             self.logger.info('To specify, add the lang parameter: scrapy fb -a lang="LANGUAGE"')
             self.logger.info('Currently choices for "LANGUAGE" are: "en", "es", "fr", "it", "pt"')
-<<<<<<< HEAD
-            self.lang = '_'
-        elif self.lang == 'en'  or self.lang == 'es' or self.lang == 'fr' or self.lang == 'it' or self.lang == 'pt':
-=======
             self.lang = '_'                       
         elif self.lang == 'en'  or self.lang == 'es' or self.lang == 'fr' or self.lang == 'it' or self.lang == 'pt' or self.lang == 'kr':
->>>>>>> pr/57
             self.logger.info('Language attribute recognized, using "{}" for the facebook interface'.format(self.lang))
         else:
             self.logger.info('Lang "{}" not currently supported'.format(self.lang))
@@ -288,10 +278,5 @@ class FacebookSpider(scrapy.Spider):
         new.add_xpath('love',"//a[contains(@href,'reaction_type=2')]/span/text()")
         new.add_xpath('wow',"//a[contains(@href,'reaction_type=3')]/span/text()")
         new.add_xpath('sigh',"//a[contains(@href,'reaction_type=7')]/span/text()")
-<<<<<<< HEAD
-        new.add_xpath('grrr',"//a[contains(@href,'reaction_type=8')]/span/text()")
-        yield new.load_item()
-=======
         new.add_xpath('grrr',"//a[contains(@href,'reaction_type=8')]/span/text()")     
-        yield new.load_item()       
->>>>>>> pr/57
+        yield new.load_item()
