@@ -32,7 +32,7 @@
             "configuration": {
               "useProxy": true,
               "username": "erba994",
-              "accessToken": "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",
+              "accessToken": "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",
               "repository": "erba994/fluffy-politics"
             }
           }
@@ -197,11 +197,11 @@
     }
   },
   "versionTag": {
-    "versionNumber": 8,
+    "versionNumber": 9,
     "lastModifiedBy": {
       "login": "admin"
     },
-    "lastModifiedOn": 1634045753178
+    "lastModifiedOn": 1634049079577
   },
   "creationTag": {
     "versionNumber": 0,
