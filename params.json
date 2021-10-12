@@ -126,6 +126,7 @@
   },
   "name": "PoliticaFB",
   "projectStatus": "Sandbox",
+  "imgPattern": 6,
   "metrics": {
     "probes": [],
     "engineConfig": {
@@ -180,6 +181,13 @@
       "checks": []
     }
   },
+  "versionTag": {
+    "versionNumber": 0,
+    "lastModifiedBy": {
+      "login": "admin"
+    },
+    "lastModifiedOn": 1634026822517
+  },
   "creationTag": {
     "versionNumber": 0,
     "lastModifiedBy": {
@@ -191,41 +199,6 @@
   "tags": [],
   "customFields": {},
   "checklists": {
-    "checklists": [
-      {
-        "title": "Your new project\u0027s Todo",
-        "createdOn": 0,
-        "items": [
-          {
-            "done": true,
-            "text": "Create the project",
-            "createdOn": 1634026525001,
-            "createdBy": "admin",
-            "stateChangedOn": 0
-          },
-          {
-            "done": false,
-            "text": "Set a project image (click on the color next to the project title)",
-            "createdOn": 1634026525001,
-            "createdBy": "admin",
-            "stateChangedOn": 0
-          },
-          {
-            "done": false,
-            "text": "Import your [first dataset](projects/POLITICAFB/datasets/new/)",
-            "createdOn": 1634026525001,
-            "createdBy": "admin",
-            "stateChangedOn": 0
-          },
-          {
-            "done": false,
-            "text": "Organize your work by replacing this with a real todo",
-            "createdOn": 1634026525001,
-            "createdBy": "admin",
-            "stateChangedOn": 0
-          }
-        ]
-      }
-    ]
+    "checklists": []
   }
 }
