@@ -3,7 +3,8 @@
     "fbcrawler": {
       "remote": "https://github.com/erba994/fbcrawl.git",
       "checkout": "refs/heads/master",
-      "remotePath": ""
+      "remotePath": "",
+      "lastHash": "f8612d242cbb7fc60b6ad21c3b0ab1fef7d39eb5"
     }
   },
   "pythonPath": [
