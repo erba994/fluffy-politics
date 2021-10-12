@@ -24,7 +24,20 @@
     "useRemoteGit": true,
     "disableAutomaticTriggers": false,
     "integrations": {
-      "integrations": []
+      "integrations": [
+        {
+          "active": true,
+          "hook": {
+            "type": "github",
+            "configuration": {
+              "useProxy": true,
+              "username": "erba994",
+              "accessToken": "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",
+              "repository": "fluffy-politics"
+            }
+          }
+        }
+      ]
     },
     "flowBuildSettings": {
       "mergeSparkPipelines": false,
@@ -183,11 +196,11 @@
     }
   },
   "versionTag": {
-    "versionNumber": 1,
+    "versionNumber": 2,
     "lastModifiedBy": {
       "login": "admin"
     },
-    "lastModifiedOn": 1634044675294
+    "lastModifiedOn": 1634044907616
   },
   "creationTag": {
     "versionNumber": 0,
