@@ -15,7 +15,7 @@ SPIDER_MODULES = ['fbcrawl.spiders']
 NEWSPIDER_MODULE = 'fbcrawl.spiders'
 
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
-USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.77 Safari/537.36'
+USER_AGENT = 'Mozilla/5.0 (BB10; Kbd) AppleWebKit/537.35+ (KHTML, like Gecko) Version/10.3.3.2205 Mobile Safari/537.35+'
 # Obey robots.txt rules
 ROBOTSTXT_OBEY = False
 
